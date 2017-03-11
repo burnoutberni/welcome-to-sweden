@@ -34,8 +34,10 @@ app.get('/webhook/', (req, res) => {
 const processMessage = (sender, event, user) => {
   if (event.message && event.message.text) {
     let text = event.message.text
+    console.log(text)
     if (text.toLowerCase() === 'restart') {
-      user.lastStep === 'FIRST_MESSAGE'
+      user.lastStep = 'FIRST_MESSAGE'
+      event.postback = undefined
     }
     switch (user.lastStep) {
       case 'FIRST_MESSAGE':
