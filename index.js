@@ -82,10 +82,10 @@ const askLanguage = (convo) => {
 const askLocation = (convo) => {
   convo.ask({
     text: 'Where do you live?',
-    quickReplies: {"content_type": "location"}
+    //quickReplies: {"content_type": "location"}
   }, (payload) => {
     console.log(payload)
-  }, [
+  }/*, [
     {
       event: 'quick_reply',
       callback: (payload, convo) => {
@@ -100,7 +100,7 @@ const askLocation = (convo) => {
         })
       }
     }
-  ])
+  ]*/)
 }
 
 bot.hear('hello', (payload, chat) => {
