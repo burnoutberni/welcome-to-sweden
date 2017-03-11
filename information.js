@@ -30,7 +30,7 @@ module.exports = function(sender, event, user) {
                         var distance = closestOfficeAndDistance[1];
                         sendMessage.text(sender, "Found it, the closest office is " + closestOffice + ", "
                             + distance + " kilometers away.", () => {
-                        }));
+                        });
                     })
                 })
             return
