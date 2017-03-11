@@ -2,6 +2,7 @@
 
 const BootBot = require('bootbot');
 const languages = require(__dirname + '/ISOlanguage.json')
+const fetch = require('node-fetch')
 
 const bot = new BootBot({
   accessToken: process.env.FB_PAGE_ACCESS_TOKEN,
@@ -81,11 +82,12 @@ const askLanguage = (convo) => {
       const allEnglishLanguageNames = languages.filter((language) => convo.get('languages').indexOf(language.code) !== -1)
         .map((language) => language.name)
         .join(' and ')
-      console.log(allEnglishLanguageNames)
+      console.log(payload)
+      //fetch(`http://nominatim.openstreetmap.org/reverse?format=json&lat=${payload}`)
       convo.say(`Ok, here's what you told me about you:
       - Name: ${convo.get('first_name')}
-      - Languages: …
-      - Location: …`).then(() => {
+      - Languages: ${allEnglishLanguageNames}
+      - Location: ${}`).then(() => {
         convo.say('I will send you a message when we found your buddy!')
         convo.end()
       })
