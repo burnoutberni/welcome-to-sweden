@@ -121,7 +121,7 @@ app.post('/webhook/', (req, res) => {
         users[sender] = {
           firstName: user.first_name,
           lastName: user.last_name,
-          language: [user.locale.split('_')[0]],
+          language: [user.locale],
           lastStep: 'FIRST_MESSAGE',
         }
         user = users[sender]
