@@ -92,6 +92,7 @@ const askLanguage = (convo) => {
             fbId: userId,
             role: convo.get('role'),
             first_name: convo.get('first_name'),
+            last_name: convo.get('last_name'),
             profile_pic: convo.get('profile_pic'),
             location: {
               lat: coordinates.lat,
@@ -110,9 +111,11 @@ const askLanguage = (convo) => {
             }
             if (buddy) {
               convo.say(`I found a buddy for you!`).then(() => {
-                convo.say(`This is ${buddy.first_name}:`)
-                convo.sendAttachment('image', buddy.profile_pic)
-                convo.say(`https://messenger.com/${buddy.fbId}`)
+                convo.say(`This is ${buddy.first_name}:`).then(() => {
+                  convo.sendAttachment('image', buddy.profile_pic).then(() => {
+                    convo.say(`Find ${buddy.first_name} on Facebook and get in touch: https://www.facebook.com/search/top/?q=${buddy.first_name}%20${buddy.last_name}`)
+                  })
+                })
               })
             } else {
               convo.say('I will send you a message when we found your buddy!')
