@@ -129,6 +129,7 @@ app.post('/webhook/', (req, res) => {
   let messaging_events = req.body.entry[0].messaging
   messaging_events.map((event) => {
     let sender = event.sender.id
+    console.log(event)
     if (event.message && event.message.payload) {
       let payload = event.message.payload
       if (payload === 'INTRO_MIGRANT') {
