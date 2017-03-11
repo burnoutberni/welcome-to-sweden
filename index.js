@@ -6,9 +6,9 @@ const request = require('request')
 const app = express()
 const token = process.env.FB_PAGE_ACCESS_TOKEN
 
-const getUserData = (sender, userId) => {
+const getUserData = (sender) => {
   request({
-    url: `https://graph.facebook.com/v2.6/${userId}`,
+    url: `https://graph.facebook.com/v2.6/${sender}`,
     qs: {
       access_token: token,
       fields: 'first_name,last_name,profile_pic,locale,timezone,gender',
@@ -179,7 +179,7 @@ app.post('/webhook/', (req, res) => {
         sendGenericMessage(sender)
         return
       }
-      getData(sender);
+      getUserData(sender);
       sendTextMessage(sender, "Hej du!")
       sendButtonMessage(sender, "Did you recently come to Sweden or are you a native?", [{
         "type":"postback",
