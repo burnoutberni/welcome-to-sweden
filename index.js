@@ -88,14 +88,18 @@ const askLocation = (convo) => {
     console.log(payload)
   }, [
     {
-      event: 'quick_reply',
+      event: 'attachment',
       callback: (payload, convo) => {
         console.log(payload, convo)
+        const languageCodes = convo.get('languages')
+        const allEnglishLanguageNames = languages
+          .filter((language) => convo.get('languages').indexOf(language.code))
+          .map((language) => language.name)
+          .join(' and ')
         convo.say(`Ok, here's what you told me about you:
-        - Name: ${convo.get('name')}
-        - Favorite Food: ${convo.get('food')}
-        - Gender: ${convo.get('gender')}
-        - Age: ${convo.get('age')}`).then(() => {
+        - Name: ${convo.get('first_name')}
+        - Languages: ${allEnglishLanguageNames}
+        - Location: …`).then(() => {
           convo.say('I will send you a message when we found your buddy!')
           convo.end()
         })
