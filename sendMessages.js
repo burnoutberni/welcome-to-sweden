@@ -1,4 +1,5 @@
 const request = require('request')
+const token = process.env.FB_PAGE_ACCESS_TOKEN
 
 const sendUserDataRequest = (sender) => {
   request({
