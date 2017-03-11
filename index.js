@@ -82,15 +82,19 @@ const askLanguage = (convo) => {
       const allEnglishLanguageNames = languages.filter((language) => convo.get('languages').indexOf(language.code) !== -1)
         .map((language) => language.name)
         .join(' and ')
-      console.log(payload.message.attachments[0])
-      //fetch(`http://nominatim.openstreetmap.org/reverse?format=json&lat=${payload}`)
-      convo.say(`Ok, here's what you told me about you:
-      - Name: ${convo.get('first_name')}
-      - Languages: ${allEnglishLanguageNames}
-      - Location: …`).then(() => {
-        convo.say('I will send you a message when we found your buddy!')
-        convo.end()
-      })
+      const coordinates = payload.message.attachments[0].payload.coordinates
+      fetch(`http://nominatim.openstreetmap.org/reverse?format=json&lat=${coordinates.lat}&lon=${coordinates.long}`)
+        .then(res => res.json())
+        .then(json => {
+          console.log(json)
+          convo.say(`Ok, here's what you told me about you:
+          - Name: ${convo.get('first_name')}
+          - Languages: ${allEnglishLanguageNames}
+          - Location: …`).then(() => {
+            convo.say('I will send you a message when we found your buddy!')
+            convo.end()
+          })
+        })
     }))
   })
 }
