@@ -92,6 +92,7 @@ const askLanguage = (convo) => {
             fbId: userId,
             role: convo.get('role'),
             name: convo.get('first_name'),
+            profile_pic: convo.get('profile_pic'),
             location: {
               lat: coordinates.lat,
               long: coordinates.long,
@@ -103,7 +104,18 @@ const askLanguage = (convo) => {
           - Name: ${convo.get('first_name')}
           - Languages: ${allEnglishLanguageNames}
           - Location: ${json.display_name}`).then(() => {
-            convo.say('I will send you a message when we found your buddy!')
+            let buddy;
+            if (users.length > 1) {
+              buddy = users.find((user) => user.fbId !== userId)
+            }
+            if (buddy) {
+              convo.say(`I found a buddy for you!`).then(() => {
+                convo.say(`This is ${buddy.first_name}:`)
+                convo.sendAttachment('image', buddy.profile_pic)
+              })
+            } else {
+              convo.say('I will send you a message when we found your buddy!')
+            }
             convo.end()
           })
         })
@@ -172,6 +184,7 @@ const sendSummary = (convo) => {
 bot.hear('hello', (payload, chat) => {
   chat.getUserProfile().then((user) => {
     chat.conversation((convo) => {
+      convo.set('profile_pic', user.profile_pic)
       convo.set('first_name', user.first_name)
       convo.set('languages', user.locale.split('_')[0])
       chat.say(`Hello, ${user.first_name}!`).then(() => askRole(convo))
