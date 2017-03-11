@@ -110,6 +110,7 @@ app.post('/webhook/', (req, res) => {
   let messaging_events = req.body.entry[0].messaging
   messaging_events.map((event) => {
     let sender = event.sender.id
+    let user
     if (!users[sender]) {
       sendMessage.userdata(sender, (user) => {
         users[sender] = {
@@ -118,11 +119,11 @@ app.post('/webhook/', (req, res) => {
           language: [],
           lastStep: 'FIRST_MESSAGE',
         }
-        let user = users[sender]
+        user = users[sender]
         processMessage(sender, event, user)
       });
     } else {
-      let user = users[sender]
+      user = users[sender]
       processMessage(sender, event, user)
     }
   })
