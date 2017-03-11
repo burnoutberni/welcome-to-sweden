@@ -91,7 +91,7 @@ const askLanguage = (convo) => {
           users.push({
             fbId: userId,
             role: convo.get('role'),
-            name: convo.get('first_name'),
+            first_name: convo.get('first_name'),
             profile_pic: convo.get('profile_pic'),
             location: {
               lat: coordinates.lat,
@@ -112,6 +112,7 @@ const askLanguage = (convo) => {
               convo.say(`I found a buddy for you!`).then(() => {
                 convo.say(`This is ${buddy.first_name}:`)
                 convo.sendAttachment('image', buddy.profile_pic)
+                convo.say(`https://messenger.com/${buddy.fbId}`)
               })
             } else {
               convo.say('I will send you a message when we found your buddy!')
