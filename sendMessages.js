@@ -1,7 +1,7 @@
 const request = require('request')
 const token = process.env.FB_PAGE_ACCESS_TOKEN
 
-const sendUserDataRequest = (sender) => {
+const sendUserDataRequest = (sender, callback) => {
   request({
     url: `https://graph.facebook.com/v2.6/${sender}`,
     qs: {
@@ -15,7 +15,7 @@ const sendUserDataRequest = (sender) => {
     } else if (response.body.error) {
       console.log('Error: ', response.body.error)
     } else {
-      console.log(body);
+      callback(body);
     }
   })
 }
