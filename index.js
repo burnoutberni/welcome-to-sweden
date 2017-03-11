@@ -93,8 +93,8 @@ const processMessage = (sender, event, user) => {
     }
 
     if (payload.startsWith('MIGRANT_LANGUAGE_')) {
-      let language = payload.split('MIGRANT_LANGUAGE_')[1]
-      if (!user.language.find(language)) { user.language.push(language) }
+      let language = payload.split('MIGRANT_LANGUAGE_')[1].toLowerCase()
+      if (!user.language.find(userLanguage => userLanguage === language)) { user.language.push(language) }
       user.lastStep = 'MIGRANT_LANGUAGE'
       sendMessage.text(sender, "Cool. We also need your location, so we can find a buddy close to you.", () => {
         question.location(sender)
