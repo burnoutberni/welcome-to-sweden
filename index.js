@@ -76,7 +76,7 @@ const askLanguage = (convo) => {
     if (addedLanguage) {
       convo.set('languages', [convo.get('languages'), addedLanguage.code])
     }
-    convo.say('Cool. We also need your location, so we can find a buddy close to you').then(() => askLocation(convo, (payload) => (
+    convo.say('Cool. We also need your location, so we can find a buddy close to you').then(() => askLocation(convo, (payload) => {
       const languageCodes = convo.get('languages')
       const allEnglishLanguageNames = languages.filter((language) => convo.get('languages').indexOf(language.code))
         .map((language) => language.name)
@@ -89,7 +89,7 @@ const askLanguage = (convo) => {
         convo.say('I will send you a message when we found your buddy!')
         convo.end()
       })
-    )))
+    }))
   })
 }
 
