@@ -1,4 +1,4 @@
-let jobOffices = {}
+var jobOffices = {}
 
 jobOffices["spanga"] = {
     latitude: 59.3794604,
@@ -6,17 +6,18 @@ jobOffices["spanga"] = {
 }
 
 const findClosestOffice = (userLocation) => {
-    var minimumDistance = - 1;
+    var minimumDistance = 1000000000000000;
     var closestJobOffice;
-    for (jobOffice in jobOffices) {
+    for (var jobOfficeName in jobOffices) {
+        var jobOffice = jobOffices[jobOfficeName];
         var distance = Math.pow((jobOffice.latitude - userLocation.latitude), 2) +
                 Math.pow((jobOffice.longitude - userLocation.longitude), 2);
-        if (distance != -1 && distance < minimumDistance) {
+        if (distance < minimumDistance) {
             minimumDistance = distance;
             closestJobOffice = jobOffice;
         }
     }
-    return closestJobOffice;
+    return [closestJobOffice, minimumDistance];
 }
 
 module.exports = {
