@@ -90,7 +90,6 @@ const processMessage = (sender, event, user) => {
         return
     }
 
-
     if (payload.startsWith('MIGRANT_LANGUAGE_')) {
       let language = payload.split('MIGRANT_LANGUAGE_')[1]
       if (!user.language.find(language)) { user.language.push(language) }
@@ -98,6 +97,10 @@ const processMessage = (sender, event, user) => {
       sendMessage.text(sender, "Cool. We also need your location, so we can find a buddy close to you.", () => {
         question.location(sender)
       })
+    }
+
+    if (payload.startsWith('INFO_')) {
+      information(sender, event, user)
     }
   }
 }
