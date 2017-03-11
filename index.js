@@ -74,23 +74,19 @@ const askLanguage = (convo) => {
         || language.nativeName.toLowerCase() === text
     })
     convo.set('language', [convo.get('language'), addedLanguage.code])
-    convo.say('bla').then(() => sendSummary(convo))
-    //convo.say('bla').then(() => askLocation(convo))
+    convo.say('Cool. We also need your location, so we can find a buddy close to you').then(() => askLocation(convo))
   })
-}
-
-const sendSummary = (convo) => {
-  convo.say('yolo')
-  convo.end()
 }
 
 const askLocation = (convo) => {
   convo.ask({
     text: 'Where do you live?',
     //quickReplies: {"content_type": "location"}
-  }, (payload) => {
+  }, (payload, convo) => {
+    const text = payload.message.text
     console.log(payload)
-  }/*, [
+    convo.say(`Got it, your favorite food is ${text}`).then(() => sendSummary(convo));
+  })/*, [
     {
       event: 'quick_reply',
       callback: (payload, convo) => {
@@ -105,7 +101,12 @@ const askLocation = (convo) => {
         })
       }
     }
-  ]*/)
+  ])*/
+}
+
+const sendSummary = (convo) => {
+  convo.say('yolo')
+  convo.end()
 }
 
 bot.hear('hello', (payload, chat) => {
