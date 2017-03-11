@@ -33,14 +33,12 @@ const findClosestOffice = (userLocation) => {
         //        Math.pow((jobOffice.longitude - userLocation.longitude), 2);
         if (distance < minimumDistance) {
             minimumDistance = distance;
-            closestJobOffice = jobOffice;
+            closestJobOffice = jobOfficeName;
         }
     }
-    return [closestJobOffice, minimumDistance];
+    return [closestJobOffice, Math.round(minimumDistance * 10) / 10];
 }
 
 module.exports = {
     closestOffice : findClosestOffice,
 }
-
-console.log(findClosestOffice({latitude: 59.4071609, longitude: 17.9435293}))
