@@ -10,7 +10,7 @@ const bot = new BootBot({
   appSecret: process.env.FB_APP_SECRET
 });
 
-let users = {}
+let users = []
 
 const askRole = (convo) => {
   convo.ask((convo) => {
