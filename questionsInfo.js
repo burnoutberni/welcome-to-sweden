@@ -8,7 +8,7 @@ const askService = (sender) => {
   }, {
     "type":"postback",
     "title":"Getting registered as a resident",
-    "payload":"REGISTRATION_INFORMATION"
+    "payload":"INFO_REGISTRATION"
   }])
 }
 
