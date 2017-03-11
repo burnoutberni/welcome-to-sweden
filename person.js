@@ -1,8 +1,10 @@
-module.exports = function Person(firstName, lastName, position, languages) {
+module.exports = function Person(firstName, lastName, position, languages, lastStep) {
     return {
         firstName: firstName,
         lastName: lastName,
+        fbId,
         position: position,
-        languages: languages
+        languages: languages,
+        lastStep: lastStep
     }
 }
