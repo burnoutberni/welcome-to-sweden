@@ -106,6 +106,7 @@ const processMessage = (sender, event, user) => {
     }
   }
 
+  console.log(event)
   if (event.message
     && event.message.attachments
     && event.message.attachments.payload
