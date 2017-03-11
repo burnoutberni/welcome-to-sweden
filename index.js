@@ -49,12 +49,14 @@ const processMessage = (sender, event, user) => {
       case 'FIRST_QUESTION':
         if (text.toLowerCase().indexOf('migrant') !== -1) {
           user.lastStep = 'INTRO_MIGRANT'
+          user.type = 'MIGRANT'
           sendMessage.text(sender, "Welcome to Sweden.", () => {
             question.purpose(sender)
           })
           return
         } else if (text.toLowerCase().indexOf('swede') !== -1) {
           user.lastStep = 'INTRO_SWEDE'
+          user.type = 'SWEDE'
           sendMessage.text(sender, "Cool. We are looking for buddies that we can match up with newly arrived people to Sweden.", () => {
             question.consent(sender)
           })
@@ -62,6 +64,36 @@ const processMessage = (sender, event, user) => {
         }
         sendMessage.text(sender, "Sorry, I didn't understand.", () => {
           question.role(sender)
+        })
+        return
+      case 'INTRO_MIGRANT':
+        if (text.toLowerCase().indexOf('info') !== -1
+          || text.toLowerCase().indexOf('job') !== -1
+        ) {
+          information(sender, event, user)
+          return
+        } else if (text.toLowerCase().indexOf('buddy') !== -1) {
+          user.lastStep = 'MIGRANT_BUDDY'
+          sendMessage.text(sender, "We are going to find a buddy for you that will help you with finding your daily routine, but first we need a couple of informations about you.", () => {
+            question.language(sender, user.language.join(' and '))
+          })
+          return
+        }
+        sendMessage.text(sender, "Sorry, I didn't understand.", () => {
+          question.purpose(sender)
+        })
+        return
+      case 'MIGRANT_LANGUAGE':
+        if (text.toLowerCase().indexOf('no') !== -1
+          || text.toLowerCase().indexOf('nej') !== -1
+        ) {
+          sendMessage.text(sender, "Okay, no problem. We also need your location, so we can find a buddy close to you.", () => {
+            question.location(sender)
+          })
+          return
+        }
+        sendMessage.text(sender, "Sorry, I didn't understand.", () => {
+          question.language(sender, user.language.join(' and '))
         })
         return
     }
@@ -72,6 +104,7 @@ const processMessage = (sender, event, user) => {
     switch (payload) {
       case 'INTRO_MIGRANT':
         user.lastStep = 'INTRO_MIGRANT'
+        user.type = 'MIGRANT'
         sendMessage.text(sender, "Welcome to Sweden.", () => {
           question.purpose(sender)
         })
@@ -86,6 +119,7 @@ const processMessage = (sender, event, user) => {
         return
       case 'INTRO_SWEDE':
         user.lastStep = 'INTRO_SWEDE'
+        user.type = 'SWEDE'
         sendMessage.text(sender, "Cool. We are looking for buddies that we can match up with newly arrived people to Sweden.", () => {
           question.consent(sender)
         })
@@ -114,7 +148,7 @@ const processMessage = (sender, event, user) => {
     user.lastStep = 'MIGRANT_LOCATION'
     console.log(event.message)
     user.location = event.message.attachments[0].payload.coordinates
-    sendMessage.text(sender, "Awesome. We will send you a message when we found your buddy!", () => console.log('the end \o/'))
+    sendMessage.text(sender, "Awesome. We will send you a message when we found your buddy!", () => console.log('the end \\o/'))
   }
 }
 
