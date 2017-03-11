@@ -51,7 +51,7 @@ const askPurpose = (convo) => {
     {
       event: 'postback:MIGRANT_INFORMATION',
       callback: (payload, convo) => {
-        // todo
+        convo.say('Sure, no problem!').then(() => askService(convo))
       }
     },
     {
@@ -103,6 +103,24 @@ const askLocation = (convo) => {
           convo.say('I will send you a message when we found your buddy!')
           convo.end()
         })
+      }
+    }
+  ])
+}
+
+const askService = (convo) => {
+  convo.ask((convo) => {
+    const buttons = [
+      { type: 'postback', title: `Closest job agency`, payload: 'MIGRANT_INFO_JOB_AGENCY'}
+    ]
+    convo.sendButtonTemplate(`Here's what I can find for you`, buttons)
+  }, (payload) => {
+    console.log(payload)
+  }, [
+    {
+      event: 'postback:MIGRANT_INFO_JOB_AGENCY',
+      callback: (payload, convo) => {
+        convo.say('Sure, no problem!').then(() => askLocation(convo))
       }
     }
   ])
