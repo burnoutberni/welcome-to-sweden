@@ -82,7 +82,7 @@ const askLanguage = (convo) => {
       const allEnglishLanguageNames = languages.filter((language) => convo.get('languages').indexOf(language.code) !== -1)
         .map((language) => language.name)
         .join(' and ')
-      console.log(payload)
+      console.log(payload.message.attachments[0])
       //fetch(`http://nominatim.openstreetmap.org/reverse?format=json&lat=${payload}`)
       convo.say(`Ok, here's what you told me about you:
       - Name: ${convo.get('first_name')}
