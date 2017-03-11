@@ -167,7 +167,7 @@ const askService = (convo) => {
     {
       event: 'postback:MIGRANT_INFO_JOB_AGENCY',
       callback: (payload, convo) => {
-        convo.say('Sure, no problem!').then(() => askLocation(convo, (payload) => sendJobAgency(payload, convo))
+        convo.say('Sure, no problem!').then(() => askLocation(convo, (payload) => sendJobAgency(payload, convo)))
       }
     }
   ])
