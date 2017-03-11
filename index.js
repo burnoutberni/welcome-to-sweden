@@ -125,6 +125,12 @@ app.post('/webhook/', (req, res) => {
   messaging_events.map((event) => {
     let sender = event.sender.id
     console.log(event)
+    if (event.attachments && event.attachments[0].type === 'location') {
+      let coordinates = event.attachments[0].payload.coordinates
+      setTextMessage(sender, "Thanks. We will send you a message once we have found your buddy!", () => {
+        console.log('Went through everything \o/')
+      })
+    }
     if (event.message && event.message.text) {
       let text = event.message.text
       getUserData(sender);
