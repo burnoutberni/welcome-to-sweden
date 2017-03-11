@@ -45,7 +45,7 @@ const findClosestOffice = (userLocation) => {
             closestJobOffice = jobOfficeName;
         }
     }
-    return [closestJobOffice, Math.round(minimumDistance * 10) / 10];
+    return { name: closestJobOffice, distance: Math.round(minimumDistance * 10) / 10 };
 }
 
 const findClosestJobOffers = () => {

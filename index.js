@@ -3,11 +3,25 @@
 const BootBot = require('bootbot');
 const languages = require(__dirname + '/ISOlanguage.json')
 const fetch = require('node-fetch')
+const job = require(__dirname + '/job.js')
 
 const bot = new BootBot({
   accessToken: process.env.FB_PAGE_ACCESS_TOKEN,
   verifyToken: process.env.FB_VERIFY_TOKEN,
   appSecret: process.env.FB_APP_SECRET
+});
+
+bot.setGreetingText('Hej!');
+bot.setGetStartedButton((payload, chat) => {
+  chat.getUserProfile().then((user) => {
+    chat.conversation((convo) => {
+      convo.set('profile_pic', user.profile_pic)
+      convo.set('first_name', user.first_name)
+      convo.set('last_name', user.last_name)
+      convo.set('languages', user.locale ? user.locale.split('_')[0] : '')
+      chat.say(`Hello, ${user.first_name}!`).then(() => askRole(convo))
+    })
+  })
 });
 
 let users = []
@@ -153,10 +167,7 @@ const askService = (convo) => {
     {
       event: 'postback:MIGRANT_INFO_JOB_AGENCY',
       callback: (payload, convo) => {
-        convo.say('Sure, no problem!').then(() => askLocation(convo, (payload) => {
-          convo.say(`Ok, here's the closest job agency`)
-          convo.end()
-        }))
+        convo.say('Sure, no problem!').then(() => askLocation(convo, (payload) => sendJobAgency(payload, convo))
       }
     }
   ])
@@ -180,12 +191,14 @@ const askConsent = (convo) => {
   ])
 }
 
-const sendSummary = (convo) => {
-  convo.say('yolo')
+const sendJobAgency = (payload, convo) => {
+  const coordinates = payload.message.attachments[0].payload.coordinates
+  const closestOffice = job.closestOffice({ longitude: coordinates.long, latitude: coordinates.lat })
+  convo.say(`Your closest job office is in ${closestOffice.name} only ${closestOffice.distance}`)
   convo.end()
 }
 
-bot.hear('hello', (payload, chat) => {
+bot.hear(['hello', 'hi', /hey( there)?/i], (payload, chat) => {
   chat.getUserProfile().then((user) => {
     chat.conversation((convo) => {
       convo.set('profile_pic', user.profile_pic)
