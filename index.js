@@ -31,6 +31,79 @@ app.get('/webhook/', (req, res) => {
   res.send('Error, wrong token')
 })
 
+const processMessage = (sender, event, user) => {
+  if (event.message && event.message.text) {
+    let text = event.message.text
+    switch (user.lastStep) {
+      case 'FIRST_MESSAGE':
+        user.lastStep = 'FIRST_QUESTION'
+        sendMessage.text(sender, "Hej du!", () => {
+          sendMessage.button(sender, "Did you recently come to Sweden or are you a native?", [{
+            "type":"postback",
+            "title":"I'm a migrant!",
+            "payload":"INTRO_MIGRANT"
+          }, {
+            "type":"postback",
+            "title":"I'm a Swede!",
+            "payload":"INTRO_SWEDE"
+          }])
+        })
+        return
+      case 'INTRO_MIGRANT':
+        sendMessage.text(sender, "Hej du!", () => {
+          sendMessage.button(sender, "Did you recently come to Sweden or are you a native?", [{
+            "type":"postback",
+            "title":"I'm a migrant!",
+            "payload":"INTRO_MIGRANT"
+          }, {
+            "type":"postback",
+            "title":"I'm a Swede!",
+            "payload":"INTRO_SWEDE"
+          }])
+        })
+        return
+    }
+  }
+
+  if (event.postback && event.postback.payload) {
+    let payload = event.postback.payload
+    if (payload === 'INTRO_MIGRANT') {
+      user.lastStep = 'INTRO_MIGRANT'
+      sendMessage.text(sender, "Welcome to Sweden.", () => {
+        sendMessage.button(sender, "Do you want to find information about job seeking in Sweden or do you want to be connected to a buddy?", [{
+          "type": "postback",
+          "title": "Job information",
+          "payload": "MIGRANT_INFORMATION"
+        }, {
+          "type": "postback",
+          "title": "Find me a buddy",
+          "payload": "MIGRANT_BUDDY"
+        }])
+        sendMessage.text(sender, "We are going to find a buddy for you that will help you with finding your daily routine, but first we need a couple of informations about you.", () => {
+          question.language(sender)
+        })
+      })
+      return
+    }
+    if (payload === 'MIGRANT_INFORMATION') {
+      information()
+    }
+    if (payload.startsWith('MIGRANT_LANGUAGE_')) {
+      let language = payload.split('MIGRANT_LANGUAGE_')[1]
+      if (!user.language.find(language)) { user.language.push(language) }
+      user.lastStep = 'MIGRANT_LANGUAGE'
+      sendMessage.text(sender, "Cool. We also need your location, so we can find a buddy close to you.", () => {
+        question.location(sender)
+      })
+    }
+    if (payload === 'INTRO_SWEDE') {
+      user.lastStep = 'INTRO_SWEDE'
+      sendMessage.text(sender, "Cool. We are looking for buddies that we can match up with newly arrived people to Sweden.", () => {
+        question.consent(sender)
+      })
+    }
+  }
+}
 
 // do things
 app.post('/webhook/', (req, res) => {
@@ -45,82 +118,12 @@ app.post('/webhook/', (req, res) => {
           language: [],
           lastStep: 'FIRST_MESSAGE',
         }
+        let user = users[sender]
+        processMessage(sender, event, user)
       });
-    }
-    let user = users[sender]
-
-    console.log(event)
-
-    if (event.message && event.message.text) {
-      let text = event.message.text
-      switch (user.lastStep) {
-        case 'FIRST_MESSAGE':
-          user.lastStep = 'FIRST_QUESTION'
-          sendMessage.text(sender, "Hej du!", () => {
-            sendMessage.button(sender, "Did you recently come to Sweden or are you a native?", [{
-              "type":"postback",
-              "title":"I'm a migrant!",
-              "payload":"INTRO_MIGRANT"
-            }, {
-              "type":"postback",
-              "title":"I'm a Swede!",
-              "payload":"INTRO_SWEDE"
-            }])
-          })
-          return
-        case 'INTRO_MIGRANT':
-          sendMessage.text(sender, "Hej du!", () => {
-            sendMessage.button(sender, "Did you recently come to Sweden or are you a native?", [{
-              "type":"postback",
-              "title":"I'm a migrant!",
-              "payload":"INTRO_MIGRANT"
-            }, {
-              "type":"postback",
-              "title":"I'm a Swede!",
-              "payload":"INTRO_SWEDE"
-            }])
-          })
-          return
-      }
-    }
-
-    if (event.postback && event.postback.payload) {
-      let payload = event.postback.payload
-      if (payload === 'INTRO_MIGRANT') {
-        user.lastStep = 'INTRO_MIGRANT'
-        sendMessage.text(sender, "Welcome to Sweden.", () => {
-          sendMessage.button(sender, "Do you want to find information about job seeking in Sweden or do you want to be connected to a buddy?", [{
-            "type": "postback",
-            "title": "Job information",
-            "payload": "MIGRANT_INFORMATION"
-          }, {
-            "type": "postback",
-            "title": "Find me a buddy",
-            "payload": "MIGRANT_BUDDY"
-          }])
-          sendMessage.text(sender, "We are going to find a buddy for you that will help you with finding your daily routine, but first we need a couple of informations about you.", () => {
-            question.language(sender)
-          })
-        })
-        return
-      }
-      if (payload === 'MIGRANT_INFORMATION') {
-        information()
-      }
-      if (payload.startsWith('MIGRANT_LANGUAGE_')) {
-        let language = payload.split('MIGRANT_LANGUAGE_')[1]
-        if (!user.language.find(language)) { user.language.push(language) }
-        user.lastStep = 'MIGRANT_LANGUAGE'
-        sendMessage.text(sender, "Cool. We also need your location, so we can find a buddy close to you.", () => {
-          question.location(sender)
-        })
-      }
-      if (payload === 'INTRO_SWEDE') {
-        user.lastStep = 'INTRO_SWEDE'
-        sendMessage.text(sender, "Cool. We are looking for buddies that we can match up with newly arrived people to Sweden.", () => {
-          question.consent(sender)
-        })
-      }
+    } else {
+      let user = users[sender]
+      processMessage(sender, event, user)
     }
   })
   res.sendStatus(200)
