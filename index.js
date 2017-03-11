@@ -34,6 +34,9 @@ app.get('/webhook/', (req, res) => {
 const processMessage = (sender, event, user) => {
   if (event.message && event.message.text) {
     let text = event.message.text
+    if (text === 'restart') {
+      user.lastStep === 'FIRST_MESSAGE'
+    }
     switch (user.lastStep) {
       case 'FIRST_MESSAGE':
         user.lastStep = 'FIRST_QUESTION'
@@ -42,6 +45,19 @@ const processMessage = (sender, event, user) => {
         })
         return
       case 'FIRST_QUESTION':
+        if (text.toLowercase.indexOf('migrant') !== -1) {
+          user.lastStep = 'INTRO_MIGRANT'
+          sendMessage.text(sender, "Welcome to Sweden.", () => {
+            question.purpose(sender)
+          })
+          return
+        } else if (text.toLowercase.indexOf('swede') !== -1) {
+          user.lastStep = 'INTRO_SWEDE'
+          sendMessage.text(sender, "Cool. We are looking for buddies that we can match up with newly arrived people to Sweden.", () => {
+            question.consent(sender)
+          })
+          return
+        }
         sendMessage.text(sender, "Sorry, I didn't understand.", () => {
           question.role(sender)
         })
@@ -67,7 +83,7 @@ const processMessage = (sender, event, user) => {
         information(sender, event, user)
         return
       case 'INTRO_SWEDE':
-      user.lastStep = 'INTRO_SWEDE'
+        user.lastStep = 'INTRO_SWEDE'
         sendMessage.text(sender, "Cool. We are looking for buddies that we can match up with newly arrived people to Sweden.", () => {
           question.consent(sender)
         })
@@ -95,11 +111,10 @@ app.post('/webhook/', (req, res) => {
     if (!users[sender]) {
       sendMessage.userdata(sender, (fbUser) => {
         fbUser = JSON.parse(fbUser)
-        console.log(fbUser, fbUser.first_name, fbUser.locale)
         users[sender] = {
           firstName: fbUser.first_name,
           lastName: fbUser.last_name,
-          language: [fbUser.locale],
+          language: [fbUser.locale.split('_')],
           lastStep: 'FIRST_MESSAGE',
         }
         user = users[sender]
