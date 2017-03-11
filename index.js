@@ -57,7 +57,7 @@ const askPurpose = (convo) => {
     {
       event: 'postback:MIGRANT_BUDDY',
       callback: (payload, convo) => {
-        convo.say('We are going to find a buddy for you that will help you with finding your daily routine, but first we need a couple of informations about you.').then(() => askLanguage(convo));
+        convo.say('We are going to find a buddy for you that will help you with finding your daily routine, but first we need a couple of informations about you.').then(() => askLanguage(convo))
       }
     },
   ])
@@ -73,7 +73,7 @@ const askLanguage = (convo) => {
       return language.name.toLowerCase() === text
         || language.nativeName.toLowerCase() === text
     })
-    convo.set('language', [convo.get('language'), addedLanguage.code])
+    //convo.set('language', [convo.get('language'), addedLanguage.code])
     convo.say(`Cool. We also need your location, so we can find a buddy close to you`).then(() => askLocation(convo))
   })
 }
