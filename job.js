@@ -1,17 +1,17 @@
 var jobOffices = {}
 var jobOffers = [{
-    name: "Baker",
-    company: "Petit Paris"
-    type: "Full-time",
+  name: "Baker",
+  company: "Petit Paris",
+  type: "Full-time",
 }, {
-    name: "Software engineer",
-    company: "Spotify",
-    type: "Full-time"
-    }]
+  name: "Software engineer",
+  company: "Spotify",
+  type: "Full-time"
+}]
 
 jobOffices["spanga"] = {
-    latitude: 59.3794604,
-    longitude: 17.9016644,
+  latitude: 59.3794604,
+  longitude: 17.9016644,
 }
 
 function toRad(Value) {
