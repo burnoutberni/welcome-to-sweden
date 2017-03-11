@@ -86,6 +86,7 @@ const askLanguage = (convo) => {
       fetch(`http://nominatim.openstreetmap.org/reverse?format=json&lat=${coordinates.lat}&lon=${coordinates.long}`)
         .then(res => res.json())
         .then(json => {
+          users[]
           convo.say(`Ok, here's what you told me about you:
           - Name: ${convo.get('first_name')}
           - Languages: ${allEnglishLanguageNames}
@@ -133,6 +134,24 @@ const askService = (convo) => {
   ])
 }
 
+const askConsent = (convo) => {
+  convo.ask((convo) => {
+    const buttons = [
+      { type: 'postback', title: `Yes!`, payload: 'SWEDE_YES'}
+    ]
+    convo.sendButtonTemplate(`Do you want to join?`, buttons)
+  }, (payload) => {
+    console.log(payload)
+  }, [
+    {
+      event: 'postback:SWEDE_YES',
+      callback: (payload, convo) => {
+        convo.say('Awesome!').then(() => askLocation(convo))
+      }
+    }
+  ])
+}
+
 const sendSummary = (convo) => {
   convo.say('yolo')
   convo.end()
@@ -143,7 +162,7 @@ bot.hear('hello', (payload, chat) => {
     chat.conversation((convo) => {
       convo.set('first_name', user.first_name)
       convo.set('languages', user.locale.split('_')[0])
-      chat.say(`Hello, ${user.first_name}!`).then(() => askRole(convo))
+      chat.say(`Hello, ${user.first_name}!`).then(() => askLanguage(convo))
     })
   })
 })
