@@ -114,7 +114,7 @@ app.post('/webhook/', (req, res) => {
         users[sender] = {
           firstName: fbUser.first_name,
           lastName: fbUser.last_name,
-          language: [fbUser.locale.split('_')],
+          language: [fbUser.locale ? fbUser.locale.split('_') : undefined],
           lastStep: 'FIRST_MESSAGE',
         }
         user = users[sender]
