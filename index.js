@@ -190,6 +190,7 @@ bot.hear('hello', (payload, chat) => {
     chat.conversation((convo) => {
       convo.set('profile_pic', user.profile_pic)
       convo.set('first_name', user.first_name)
+      convo.set('last_name', user.last_name)
       convo.set('languages', user.locale ? user.locale.split('_')[0] : '')
       chat.say(`Hello, ${user.first_name}!`).then(() => askRole(convo))
     })
