@@ -4,7 +4,7 @@ const askService = (sender) => {
   sendMessage.button(sender, `What service do you need?`, [{
     "type":"postback",
     "title":"Finding a job",
-    "payload":"JOB_INFORMATION"
+    "payload":"INFO_JOB"
   }, {
     "type":"postback",
     "title":"Getting registered as a resident",
@@ -16,11 +16,11 @@ const askJobService = (sender) => {
   sendMessage.button(sender, `Here's what I can do for you`, [{
     "type":"postback",
     "title":"Show the nearest job agency",
-    "payload":"JOB_CLOSEST_AGENCY"
+    "payload":"INFO_JOB_CLOSEST_AGENCY"
   }, {
     "type":"postback",
     "title":"Show me some job offers",
-    "payload":"JOB_OFFERS"
+    "payload":"INFO_JOB_OFFERS"
   }])
 }
 

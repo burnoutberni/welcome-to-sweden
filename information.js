@@ -12,12 +12,15 @@ module.exports = function(sender, event, user) {
         let payload = event.postback.payload
         
         switch (payload) {
-          case 'JOB_INFORMATION':
-            user.lastStep = 'MIGRANT_INFORMATION'
+          case 'INFO_JOB':
+            user.lastStep = 'MIGRANT_INFORMATION';
             sendMessage.text(sender, "Hey, my name is Hans. I'll be your job counselor today", () => {
-                questionsInfo.jobService(sender)
+                questionsInfo.jobService(sender);
             })
           return
+        case 'INFO_JOB_CLOSEST_AGENCY':
+            user.lastStep = 'JOB_INFORMATION';
+
         }
     }
 }
