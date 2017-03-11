@@ -24,8 +24,17 @@ const askJobService = (sender) => {
   }])
 }
 
+const askJobOffers = (sender) => {
+    sendMessage.button(sender, `Would you like to get some available jobs around your area?`, [{
+        "type":"postback",
+        "title":"Yes, please",
+        "payload":"INFO_JOB_OFFERS"
+    }])
+}
+
 module.exports = {
-  service: askService,
-  jobService: askJobService,
+    service: askService,
+    jobService: askJobService,
+    jobOffers: askJobOffers,
 }
 

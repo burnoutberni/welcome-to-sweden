@@ -1,4 +1,13 @@
 var jobOffices = {}
+var jobOffers = [{
+    name: "Baker",
+    company: "Petit Paris"
+    type: "Full-time",
+}, {
+    name: "Software engineer",
+    company: "Spotify",
+    type: "Full-time"
+    }]
 
 jobOffices["spanga"] = {
     latitude: 59.3794604,
@@ -39,6 +48,11 @@ const findClosestOffice = (userLocation) => {
     return [closestJobOffice, Math.round(minimumDistance * 10) / 10];
 }
 
+const findClosestJobOffers = () => {
+    return jobOffers;
+}
+
 module.exports = {
     closestOffice : findClosestOffice,
+    closestJobOffers: findClosestJobOffers,
 }

@@ -30,10 +30,18 @@ module.exports = function(sender, event, user) {
                         var distance = closestOfficeAndDistance[1];
                         sendMessage.text(sender, "Found it, the closest office is " + closestOffice + ", "
                             + distance + " kilometers away.", () => {
+                            questionsInfo.jobService(sender);
+                        }
                         });
-                    })
-                })
+                    });
+                });
             return
+        case 'INFO_JOB_OFFERS':
+            user.lastStep = 'INFO_JOB_CLOSEST_AGENCY';
+            sendMessage.text(sender, "Let me see...", () => {
+                
+            });
+        return
         }
     }
 }
