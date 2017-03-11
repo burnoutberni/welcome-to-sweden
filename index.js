@@ -94,7 +94,7 @@ app.post('/webhook/', (req, res) => {
     let user
     if (!users[sender]) {
       sendMessage.userdata(sender, (fbUser) => {
-        fbUser = parseJSON(fbUser)
+        fbUser = JSON.parse(fbUser)
         console.log(fbUser, fbUser.first_name, fbUser.locale)
         users[sender] = {
           firstName: fbUser.first_name,
