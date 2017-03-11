@@ -110,3 +110,5 @@ bot.hear('hello', (payload, chat) => {
     })
   })
 })
+
+bot.start()
