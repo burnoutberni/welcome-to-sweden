@@ -78,7 +78,7 @@ const askLanguage = (convo) => {
     }
     convo.say('Cool. We also need your location, so we can find a buddy close to you').then(() => askLocation(convo, (payload) => {
       const languageCodes = convo.get('languages')
-      const allEnglishLanguageNames = languages.filter((language) => convo.get('languages').indexOf(language.code))
+      const allEnglishLanguageNames = languages.filter((language) => convo.get('languages').indexOf(language.code) !== -1)
         .map((language) => language.name)
         .join(' and ')
       console.log(allEnglishLanguageNames)
