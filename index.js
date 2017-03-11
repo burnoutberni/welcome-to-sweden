@@ -106,7 +106,11 @@ const processMessage = (sender, event, user) => {
     }
   }
 
-  if (event.message && event.message.attachments && event.message.attachments.payload.coordinates) {
+  if (event.message
+    && event.message.attachments
+    && event.message.attachments.payload
+    && event.message.attachments.payload.coordinates
+  ) {
     user.lastStep = 'MIGRANT_LOCATION'
     console.log(event.message)
     user.location = event.message.attachments.payload.coordinates
