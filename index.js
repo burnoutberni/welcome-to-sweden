@@ -81,17 +81,12 @@ const askLanguage = (convo) => {
 }
 
 const askLocation = (convo) => {
-  //quickReplies: {"content_type": "location"}
-  convo.say({
+  convo.ask({
     text: 'Where do you live?',
     quickReplies: [{ content_type: "location" }]
-  })
-
-  convo.ask('Where do you live?', (payload, convo) => {
-    const text = payload.message.text
+  }, (payload) => {
     console.log(payload)
-    convo.say(`Got it, your favorite food is ${text}`).then(() => sendSummary(convo));
-  })/*, [
+  }, [
     {
       event: 'quick_reply',
       callback: (payload, convo) => {
@@ -106,7 +101,7 @@ const askLocation = (convo) => {
         })
       }
     }
-  ])*/
+  ])
 }
 
 const sendSummary = (convo) => {
