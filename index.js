@@ -34,7 +34,7 @@ app.get('/webhook/', (req, res) => {
 const processMessage = (sender, event, user) => {
   if (event.message && event.message.text) {
     let text = event.message.text
-    if (text === 'restart') {
+    if (text.toLowerCase() === 'restart') {
       user.lastStep === 'FIRST_MESSAGE'
     }
     switch (user.lastStep) {
@@ -45,13 +45,13 @@ const processMessage = (sender, event, user) => {
         })
         return
       case 'FIRST_QUESTION':
-        if (text.toLowercase.indexOf('migrant') !== -1) {
+        if (text.toLowerCase().indexOf('migrant') !== -1) {
           user.lastStep = 'INTRO_MIGRANT'
           sendMessage.text(sender, "Welcome to Sweden.", () => {
             question.purpose(sender)
           })
           return
-        } else if (text.toLowercase.indexOf('swede') !== -1) {
+        } else if (text.toLowerCase().indexOf('swede') !== -1) {
           user.lastStep = 'INTRO_SWEDE'
           sendMessage.text(sender, "Cool. We are looking for buddies that we can match up with newly arrived people to Sweden.", () => {
             question.consent(sender)
