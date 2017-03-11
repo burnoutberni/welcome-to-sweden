@@ -87,7 +87,7 @@ const askLanguage = (convo) => {
       convo.say(`Ok, here's what you told me about you:
       - Name: ${convo.get('first_name')}
       - Languages: ${allEnglishLanguageNames}
-      - Location: ${}`).then(() => {
+      - Location: …`).then(() => {
         convo.say('I will send you a message when we found your buddy!')
         convo.end()
       })
