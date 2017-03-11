@@ -94,11 +94,11 @@ app.post('/webhook/', (req, res) => {
     let user
     if (!users[sender]) {
       sendMessage.userdata(sender, (fbUser) => {
-        console.log(fbUser)
+        console.log(fbUser, fbUser.locale)
         users[sender] = {
           firstName: fbUser.first_name,
           lastName: fbUser.last_name,
-          language: [fbUser.locale.split('_')[0]],
+          language: [fbUser.locale],
           lastStep: 'FIRST_MESSAGE',
         }
         user = users[sender]
