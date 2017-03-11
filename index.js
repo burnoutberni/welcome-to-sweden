@@ -129,9 +129,8 @@ app.post('/webhook/', (req, res) => {
   let messaging_events = req.body.entry[0].messaging
   messaging_events.map((event) => {
     let sender = event.sender.id
-    console.log(event)
-    if (event.message && event.message.payload) {
-      let payload = event.message.payload
+    if (event.postback && event.postback.payload) {
+      let payload = event.postback.payload
       if (payload === 'INTRO_MIGRANT') {
         sendTextMessage(sender, "Welcome to Sweden.")
         sendButtonMessage(sender, "What are you looking for?", [{
