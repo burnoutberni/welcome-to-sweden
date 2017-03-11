@@ -25,7 +25,7 @@ const getUserData = (sender) => {
   })
 }
 
-const sendTextMessage = (sender, text) => {
+const sendTextMessage = (sender, text, callback) => {
   let messageData = { text:text }
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
@@ -41,6 +41,7 @@ const sendTextMessage = (sender, text) => {
     } else if (response.body.error) {
       console.log('Error: ', response.body.error)
     }
+    callback();
   })
 }
 
@@ -97,55 +98,6 @@ const sendButtonMessage = (sender, question, buttons) => {
   })
 }
 
-const sendGenericMessage = (sender) => {
-  let messageData = {
-    "attachment": {
-      "type": "template",
-      "payload": {
-        "template_type": "generic",
-        "elements": [{
-          "title": "First card",
-          "subtitle": "Element #1 of an hscroll",
-          "image_url": "http://messengerdemo.parseapp.com/img/rift.png",
-          "buttons": [{
-            "type": "web_url",
-            "url": "https://www.messenger.com",
-            "title": "web url"
-          }, {
-            "type": "postback",
-            "title": "Postback",
-            "payload": "Payload for first element in a generic bubble",
-          }],
-        }, {
-          "title": "Second card",
-          "subtitle": "Element #2 of an hscroll",
-          "image_url": "http://messengerdemo.parseapp.com/img/gearvr.png",
-          "buttons": [{
-            "type": "postback",
-            "title": "Postback",
-            "payload": "Payload for second element in a generic bubble",
-          }],
-        }]
-      }
-    }
-  }
-  request({
-    url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token:token},
-    method: 'POST',
-    json: {
-      recipient: {id:sender},
-      message: messageData,
-    }
-  }, (error, response, body) => {
-    if (error) {
-      console.log('Error sending messages: ', error)
-    } else if (response.body.error) {
-      console.log('Error: ', response.body.error)
-    }
-  })
-}
-
 app.set('port', (process.env.PORT || 5000))
 
 // Process application/x-www-form-urlencoded
@@ -172,56 +124,57 @@ app.post('/webhook/', (req, res) => {
   let messaging_events = req.body.entry[0].messaging
   messaging_events.map((event) => {
     let sender = event.sender.id
+    if (event.message && event.message.text) {
+      let text = event.message.text
+      getUserData(sender);
+      sendTextMessage(sender, "Hej du!", () => {
+        sendButtonMessage(sender, "Did you recently come to Sweden or are you a native?", [{
+          "type":"postback",
+          "title":"I'm a migrant!",
+          "payload":"INTRO_MIGRANT"
+        }, {
+          "type":"postback",
+          "title":"I'm a Swede!",
+          "payload":"INTRO_SWEDE"
+        }])
+      })
+    }
     if (event.postback && event.postback.payload) {
       let payload = event.postback.payload
       if (payload === 'INTRO_MIGRANT') {
-        sendTextMessage(sender, "Welcome to Sweden.")
-        sendTextMessage(sender, "We are going to find a buddy for you that will help you with finding your daily routine, but first we need a couple of informations about you.")
-        sendButtonMessage(sender, "It seems like you speak $language, do you also want to select a second language that you feel comfortable speaking in?", [{
-          "type":"postback",
-          "title":"English",
-          "payload":"MIGRANT_LANGUAGE_EN"
-        }, {
-          "type":"postback",
-          "title":"French",
-          "payload":"MIGRANT_LANGUAGE_FR"
-        }, {
-          "type":"postback",
-          "title":"Spanish",
-          "payload":"MIGRANT_LANGUAGE_ES"
-        }])
+        sendTextMessage(sender, "Welcome to Sweden.", () => {
+          sendTextMessage(sender, "We are going to find a buddy for you that will help you with finding your daily routine, but first we need a couple of informations about you.", () => {
+            sendButtonMessage(sender, "It seems like you speak $language, do you also want to select a second language that you feel comfortable speaking in?", [{
+              "type":"postback",
+              "title":"English",
+              "payload":"MIGRANT_LANGUAGE_EN"
+            }, {
+              "type":"postback",
+              "title":"French",
+              "payload":"MIGRANT_LANGUAGE_FR"
+            }, {
+              "type":"postback",
+              "title":"Spanish",
+              "payload":"MIGRANT_LANGUAGE_ES"
+            }])
+          })
+        })
         return
       }
       if (payload.startsWith('MIGRANT_LANGUAGE_')) {
-        sendTextMessage(sender, "Cool. We also need your location, so we can find a buddy close to you.")
-        sendQuickReplyMessage(sender, "Please share your location:", [{ content_type: "location" }])
+        sendTextMessage(sender, "Cool. We also need your location, so we can find a buddy close to you.", () => {
+          sendQuickReplyMessage(sender, "Please share your location:", [{ content_type: "location" }])
+        })
       }
       if (payload === 'INTRO_SWEDE') {
-        sendTextMessage(sender, "Cool. We are looking for buddies that we can match up with newly arrived people to Sweden.")
-        sendButtonMessage(sender, "Do you want to join?", [{
-          "type":"postback",
-          "title":"Yes!",
-          "payload":"SWEDE_YES"
-        }])
+        sendTextMessage(sender, "Cool. We are looking for buddies that we can match up with newly arrived people to Sweden.", () => {
+          sendButtonMessage(sender, "Do you want to join?", [{
+            "type":"postback",
+            "title":"Yes!",
+            "payload":"SWEDE_YES"
+          }])
+        })
       }
-    }
-    if (event.message && event.message.text) {
-      let text = event.message.text
-      if (text === 'Generic') {
-        sendGenericMessage(sender)
-        return
-      }
-      getUserData(sender);
-      sendTextMessage(sender, "Hej du!")
-      sendButtonMessage(sender, "Did you recently come to Sweden or are you a native?", [{
-        "type":"postback",
-        "title":"I'm a migrant!",
-        "payload":"INTRO_MIGRANT"
-      }, {
-        "type":"postback",
-        "title":"I'm a Swede!",
-        "payload":"INTRO_SWEDE"
-      }])
     }
   })
   res.sendStatus(200)
