@@ -1,7 +1,7 @@
 const sendMessage = require(__dirname + '/sendMessages.js')
 
-const askLanguage = (sender) => {
-  sendMessage.button(sender, "It seems like you speak $language, do you also want to select a second language that you feel comfortable speaking in?", [{
+const askLanguage = (sender, language) => {
+  sendMessage.button(sender, `It seems like you speak ${language}, do you also want to select a second language that you feel comfortable speaking in?`, [{
     "type":"postback",
     "title":"English",
     "payload":"MIGRANT_LANGUAGE_EN"

@@ -67,39 +67,44 @@ const processMessage = (sender, event, user) => {
 
   if (event.postback && event.postback.payload) {
     let payload = event.postback.payload
-    if (payload === 'INTRO_MIGRANT') {
-      user.lastStep = 'INTRO_MIGRANT'
-      sendMessage.text(sender, "Welcome to Sweden.", () => {
-        sendMessage.button(sender, "Do you want to find information about job seeking in Sweden or do you want to be connected to a buddy?", [{
-          "type": "postback",
-          "title": "Job information",
-          "payload": "MIGRANT_INFORMATION"
-        }, {
-          "type": "postback",
-          "title": "Find me a buddy",
-          "payload": "MIGRANT_BUDDY"
-        }])
-        sendMessage.text(sender, "We are going to find a buddy for you that will help you with finding your daily routine, but first we need a couple of informations about you.", () => {
-          question.language(sender)
+    switch (payload) {
+      case 'INTRO_MIGRANT':
+        user.lastStep = 'INTRO_MIGRANT'
+        sendMessage.text(sender, "Welcome to Sweden.", () => {
+          sendMessage.button(sender, "Do you want to find information about job seeking in Sweden or do you want to be connected to a buddy?", [{
+            "type": "postback",
+            "title": "Job information",
+            "payload": "MIGRANT_INFORMATION"
+          }, {
+            "type": "postback",
+            "title": "Find me a buddy",
+            "payload": "MIGRANT_BUDDY"
+          }])
         })
-      })
-      return
+        return
+      case 'MIGRANT_BUDDY':
+        sendMessage.text(sender, "We are going to find a buddy for you that will help you with finding your daily routine, but first we need a couple of informations about you.", () => {
+          question.language(sender, user.language.join(' and '))
+        })
+        return
+      case 'MIGRANT_INFORMATION':
+        information(sender, event, user)
+        return
+      case 'INTRO_SWEDE':
+      user.lastStep = 'INTRO_SWEDE'
+        sendMessage.text(sender, "Cool. We are looking for buddies that we can match up with newly arrived people to Sweden.", () => {
+          question.consent(sender)
+        })
+        return
     }
-    if (payload === 'MIGRANT_INFORMATION') {
-      information()
-    }
+
+
     if (payload.startsWith('MIGRANT_LANGUAGE_')) {
       let language = payload.split('MIGRANT_LANGUAGE_')[1]
       if (!user.language.find(language)) { user.language.push(language) }
       user.lastStep = 'MIGRANT_LANGUAGE'
       sendMessage.text(sender, "Cool. We also need your location, so we can find a buddy close to you.", () => {
         question.location(sender)
-      })
-    }
-    if (payload === 'INTRO_SWEDE') {
-      user.lastStep = 'INTRO_SWEDE'
-      sendMessage.text(sender, "Cool. We are looking for buddies that we can match up with newly arrived people to Sweden.", () => {
-        question.consent(sender)
       })
     }
   }
@@ -116,7 +121,7 @@ app.post('/webhook/', (req, res) => {
         users[sender] = {
           firstName: user.first_name,
           lastName: user.last_name,
-          language: [],
+          language: [user.locale.split('_')[0]],
           lastStep: 'FIRST_MESSAGE',
         }
         user = users[sender]
