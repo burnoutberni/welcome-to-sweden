@@ -96,7 +96,6 @@ app.post('/webhook/', (req, res) => {
             "type": "postback",
             "title": "Find me a buddy",
             "payload": "MIGRANT_BUDDY"
-          }
           }])
           sendMessage.text(sender, "We are going to find a buddy for you that will help you with finding your daily routine, but first we need a couple of informations about you.", () => {
             question.language(sender)
