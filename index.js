@@ -44,6 +44,30 @@ const sendTextMessage = (sender, text) => {
   })
 }
 
+const sendQuickReplyMessage = (sender, text, quick_replies) => {
+  let messageData = {
+    text: text,
+    quick_replies: quick_replies
+  }
+  request({
+    url: 'https://graph.facebook.com/v2.6/me/messages',
+    qs: {access_token:token},
+    method: 'POST',
+    json: {
+      recipient: {id:sender},
+      message: messageData,
+    }
+  }, (error, response, body) => {
+    if (error) {
+      console.log('Error sending messages: ', error)
+    } else if (response.body.error) {
+      console.log('Error: ', response.body.error)
+    } else {
+      console.log(body)
+    }
+  })
+}
+
 const sendButtonMessage = (sender, question, buttons) => {
   let messageData = {
     "attachment":{
@@ -153,17 +177,24 @@ app.post('/webhook/', (req, res) => {
       if (payload === 'INTRO_MIGRANT') {
         sendTextMessage(sender, "Welcome to Sweden.")
         sendTextMessage(sender, "We are going to find a buddy for you that will help you with finding your daily routine, but first we need a couple of informations about you.")
-
-        sendButtonMessage(sender, "What are you looking for?", [{
+        sendButtonMessage(sender, "It seems like you speak $language, do you also want to select a second language that you feel comfortable speaking in?", [{
           "type":"postback",
-          "title":"Nearest job office",
-          "payload":"MIGRANT_ARBETSFORMEDLINGEN"
+          "title":"English",
+          "payload":"MIGRANT_LANGUAGE_EN"
         }, {
           "type":"postback",
-          "title":"Nearest tax office",
-          "payload":"MIGRANT_SKATTEVERKET"
+          "title":"French",
+          "payload":"MIGRANT_LANGUAGE_FR"
+        }, {
+          "type":"postback",
+          "title":"Spanish",
+          "payload":"MIGRANT_LANGUAGE_ES"
         }])
         return
+      }
+      if (payload.startsWith('MIGRANT_LANGUAGE_')) {
+        sendTextMessage(sender, "Cool. We also need your location, so we can find a buddy close to you.")
+        sendQuickReplyMessage(sender, "Please share your location:", [{ content_type: "location" }])
       }
       if (payload === 'INTRO_SWEDE') {
         sendTextMessage(sender, "Cool. We are looking for buddies that we can match up with newly arrived people to Sweden.")
