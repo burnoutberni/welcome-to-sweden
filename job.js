@@ -20,5 +20,5 @@ const findClosestOffice = (userLocation) => {
 }
 
 module.exports = {
-    closestOffice = findClosestOffice,
+    closestOffice : findClosestOffice,
 }
