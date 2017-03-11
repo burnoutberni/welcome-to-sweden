@@ -106,15 +106,14 @@ const processMessage = (sender, event, user) => {
     }
   }
 
-  console.log(event)
   if (event.message
     && event.message.attachments
-    && event.message.attachments.payload
-    && event.message.attachments.payload.coordinates
+    && event.message.attachments[0].payload
+    && event.message.attachments[0].payload.coordinates
   ) {
     user.lastStep = 'MIGRANT_LOCATION'
     console.log(event.message)
-    user.location = event.message.attachments.payload.coordinates
+    user.location = event.message.attachments[0].payload.coordinates
     sendMessage.text(sender, "Awesome. We will send you a message when we found your buddy!", () => console.log('the end \o/'))
   }
 }
