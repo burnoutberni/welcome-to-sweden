@@ -38,28 +38,12 @@ const processMessage = (sender, event, user) => {
       case 'FIRST_MESSAGE':
         user.lastStep = 'FIRST_QUESTION'
         sendMessage.text(sender, "Hej du!", () => {
-          sendMessage.button(sender, "Did you recently come to Sweden or are you a native?", [{
-            "type":"postback",
-            "title":"I'm a migrant!",
-            "payload":"INTRO_MIGRANT"
-          }, {
-            "type":"postback",
-            "title":"I'm a Swede!",
-            "payload":"INTRO_SWEDE"
-          }])
+          question.role(sender)
         })
         return
-      case 'INTRO_MIGRANT':
-        sendMessage.text(sender, "Hej du!", () => {
-          sendMessage.button(sender, "Did you recently come to Sweden or are you a native?", [{
-            "type":"postback",
-            "title":"I'm a migrant!",
-            "payload":"INTRO_MIGRANT"
-          }, {
-            "type":"postback",
-            "title":"I'm a Swede!",
-            "payload":"INTRO_SWEDE"
-          }])
+      case 'FIRST_QUESTION':
+        sendMessage.text(sender, "Sorry, I didn't understand.", () => {
+          question.role(sender)
         })
         return
     }
@@ -71,15 +55,7 @@ const processMessage = (sender, event, user) => {
       case 'INTRO_MIGRANT':
         user.lastStep = 'INTRO_MIGRANT'
         sendMessage.text(sender, "Welcome to Sweden.", () => {
-          sendMessage.button(sender, "Do you want to find information about job seeking in Sweden or do you want to be connected to a buddy?", [{
-            "type": "postback",
-            "title": "Job information",
-            "payload": "MIGRANT_INFORMATION"
-          }, {
-            "type": "postback",
-            "title": "Find me a buddy",
-            "payload": "MIGRANT_BUDDY"
-          }])
+          question.purpose(sender)
         })
         return
       case 'MIGRANT_BUDDY':
@@ -117,11 +93,12 @@ app.post('/webhook/', (req, res) => {
     let sender = event.sender.id
     let user
     if (!users[sender]) {
-      sendMessage.userdata(sender, (user) => {
+      sendMessage.userdata(sender, (fbUser) => {
+        console.log(fbUser, fbUser.locale)
         users[sender] = {
-          firstName: user.first_name,
-          lastName: user.last_name,
-          language: [user.locale],
+          firstName: fbUser.first_name,
+          lastName: fbUser.last_name,
+          language: [fbUser.locale],
           lastStep: 'FIRST_MESSAGE',
         }
         user = users[sender]
