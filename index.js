@@ -155,7 +155,7 @@ const askConsent = (convo) => {
     {
       event: 'postback:SWEDE_YES',
       callback: (payload, convo) => {
-        convo.say('Awesome!').then(() => askLocation(convo))
+        convo.say('Awesome!').then(() => askLanguage(convo))
       }
     }
   ])
@@ -171,7 +171,7 @@ bot.hear('hello', (payload, chat) => {
     chat.conversation((convo) => {
       convo.set('first_name', user.first_name)
       convo.set('languages', user.locale.split('_')[0])
-      chat.say(`Hello, ${user.first_name}!`).then(() => askLanguage(convo))
+      chat.say(`Hello, ${user.first_name}!`).then(() => askRole(convo))
     })
   })
 })
