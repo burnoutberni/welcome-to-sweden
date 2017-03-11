@@ -1,6 +1,6 @@
 let jobOffices = {}
 
-jobOffices[spanga] = {
+jobOffices["spanga"] = {
     latitude: 59.3794604,
     longitude: 17.9016644,
 }
