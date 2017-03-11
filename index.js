@@ -83,7 +83,7 @@ const processMessage = (sender, event, user) => {
           question.purpose(sender)
         })
         return
-      case 'MIGRANT_LANGUAGE':
+      case 'MIGRANT_BUDDY':
         if (text.toLowerCase().indexOf('no') !== -1
           || text.toLowerCase().indexOf('nej') !== -1
         ) {
