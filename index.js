@@ -124,6 +124,7 @@ app.post('/webhook/', (req, res) => {
   let messaging_events = req.body.entry[0].messaging
   messaging_events.map((event) => {
     let sender = event.sender.id
+    console.log(event)
     if (event.message && event.message.text) {
       let text = event.message.text
       getUserData(sender);
