@@ -74,8 +74,14 @@ const askLanguage = (convo) => {
         || language.nativeName.toLowerCase() === text
     })
     convo.set('language', [convo.get('language'), addedLanguage.code])
-    convo.say('bla').then(() => askLocation(convo))
+    convo.say('bla').then(() => sendSummary(convo))
+    //convo.say('bla').then(() => askLocation(convo))
   })
+}
+
+const sendSummary = (convo) => {
+  convo.say('yolo')
+  convo.end()
 }
 
 const askLocation = (convo) => {
