@@ -194,7 +194,7 @@ const askConsent = (convo) => {
 const sendJobAgency = (payload, convo) => {
   const coordinates = payload.message.attachments[0].payload.coordinates
   const closestOffice = job.closestOffice({ longitude: coordinates.long, latitude: coordinates.lat })
-  convo.say(`Your closest job office is in ${closestOffice.name} only ${closestOffice.distance}`)
+  convo.say(`Your closest job office is in ${closestOffice.name} only ${closestOffice.distance}km from your place.`)
   convo.end()
 }
 

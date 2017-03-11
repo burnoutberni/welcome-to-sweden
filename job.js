@@ -9,7 +9,7 @@ var jobOffers = [{
   type: "Full-time"
 }]
 
-jobOffices["spanga"] = {
+jobOffices["Spånga"] = {
   latitude: 59.3794604,
   longitude: 17.9016644,
 }
