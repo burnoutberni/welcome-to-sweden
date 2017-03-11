@@ -25,22 +25,14 @@ const sendTextMessage = (sender, text) => {
   })
 }
 
-const sendButtonMessage = (sender, question) => {
+const sendButtonMessage = (sender, question, buttons) => {
   let messageData = {
     "attachment":{
       "type":"template",
       "payload":{
         "template_type":"button",
         "text": question,
-        "buttons":[{
-          "type":"web_url",
-          "url":"https://petersapparel.parseapp.com",
-          "title":"Show Website"
-        }, {
-          "type":"postback",
-          "title":"Start Chatting",
-          "payload":"USER_DEFINED_PAYLOAD"
-        }]
+        "buttons": buttons
       }
     }
   }
@@ -139,12 +131,42 @@ app.post('/webhook/', (req, res) => {
     let sender = event.sender.id
     if (event.message && event.message.text) {
       let text = event.message.text
+      let payload = event.message.payload
       if (text === 'Generic') {
         sendGenericMessage(sender)
         return
       }
+      if (payload === 'INTRO_MIGRANT') {
+        sendTextMessage(sender, "Welcome to Sweden.")
+        sendButtonMessage(sender, "What are you looking for?", [{
+          "type":"postback",
+          "title":"Nearest job office",
+          "payload":"MIGRANT_ARBETSFORMEDLINGEN"
+        }, {
+          "type":"postback",
+          "title":"Nearest tax office",
+          "payload":"MIGRANT_SKATTEVERKET"
+        }])
+        return
+      }
+      if (payload === 'INTRO_SWEDE') {
+        sendTextMessage(sender, "Cool. We are looking for buddies that we can match up with newly arrived people to Sweden.")
+        sendButtonMessage(sender, "Do you want to join?", [{
+          "type":"postback",
+          "title":"Yes!",
+          "payload":"SWEDE_YES"
+        }])
+      }
       sendTextMessage(sender, "Hej du!")
-      sendButtonMessage(sender, "Did you recently come to Sweden or are you a native?")
+      sendButtonMessage(sender, "Did you recently come to Sweden or are you a native?", [{
+        "type":"postback",
+        "title":"I'm a migrant!",
+        "payload":"INTRO_MIGRANT"
+      }, {
+        "type":"postback",
+        "title":"I'm a Swede!",
+        "payload":"INTRO_SWEDE"
+      }])
     }
   })
   res.sendStatus(200)
