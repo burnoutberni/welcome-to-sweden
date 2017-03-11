@@ -86,7 +86,10 @@ const askLanguage = (convo) => {
       fetch(`http://nominatim.openstreetmap.org/reverse?format=json&lat=${coordinates.lat}&lon=${coordinates.long}`)
         .then(res => res.json())
         .then(json => {
+          const userId = payload.sender.id
+          users = users.filter((user) => user.fbId !== userId)
           users.push({
+            fbId: userId,
             role: convo.get('role'),
             name: convo.get('first_name'),
             location: {
