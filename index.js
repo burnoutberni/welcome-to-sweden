@@ -2,101 +2,9 @@
 
 const express = require('express')
 const bodyParser = require('body-parser')
-const request = require('request')
+const sendMessage = require(__dirname + '/sendMessages.js')
 const app = express()
 const token = process.env.FB_PAGE_ACCESS_TOKEN
-
-const getUserData = (sender) => {
-  request({
-    url: `https://graph.facebook.com/v2.6/${sender}`,
-    qs: {
-      access_token: token,
-      fields: 'first_name,last_name,profile_pic,locale,timezone,gender',
-    },
-    method: 'GET'
-  }, (error, response, body) => {
-    if (error) {
-      console.log('Error sending messages: ', error)
-    } else if (response.body.error) {
-      console.log('Error: ', response.body.error)
-    } else {
-      console.log(body);
-    }
-  })
-}
-
-const sendTextMessage = (sender, text, callback) => {
-  let messageData = { text:text }
-  request({
-    url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token:token},
-    method: 'POST',
-    json: {
-      recipient: {id:sender},
-      message: messageData,
-    }
-  }, (error, response, body) => {
-    if (error) {
-      console.log('Error sending messages: ', error)
-    } else if (response.body.error) {
-      console.log('Error: ', response.body.error)
-    }
-    callback();
-  })
-}
-
-const sendQuickReplyMessage = (sender, text, quick_replies) => {
-  let messageData = {
-    text: text,
-    quick_replies: quick_replies
-  }
-  request({
-    url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token:token},
-    method: 'POST',
-    json: {
-      recipient: {id:sender},
-      message: messageData,
-    }
-  }, (error, response, body) => {
-    if (error) {
-      console.log('Error sending messages: ', error)
-    } else if (response.body.error) {
-      console.log('Error: ', response.body.error)
-    } else {
-      console.log(body)
-    }
-  })
-}
-
-const sendButtonMessage = (sender, question, buttons) => {
-  let messageData = {
-    "attachment":{
-      "type":"template",
-      "payload":{
-        "template_type":"button",
-        "text": question,
-        "buttons": buttons
-      }
-    }
-  }
-
-  request({
-    url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token:token},
-    method: 'POST',
-    json: {
-      recipient: {id:sender},
-      message: messageData,
-    }
-  }, (error, response, body) => {
-    if (error) {
-      console.log('Error sending messages: ', error)
-    } else if (response.body.error) {
-      console.log('Error: ', response.body.error)
-    }
-  })
-}
 
 app.set('port', (process.env.PORT || 5000))
 
@@ -125,17 +33,18 @@ app.post('/webhook/', (req, res) => {
   messaging_events.map((event) => {
     let sender = event.sender.id
     console.log(event)
+
     if (event.attachments && event.attachments[0].type === 'location') {
       let coordinates = event.attachments[0].payload.coordinates
-      setTextMessage(sender, "Thanks. We will send you a message once we have found your buddy!", () => {
+      sendMessage.text(sender, "Thanks. We will send you a message once we have found your buddy!", () => {
         console.log('Went through everything \o/')
       })
     }
     if (event.message && event.message.text) {
       let text = event.message.text
-      getUserData(sender);
-      sendTextMessage(sender, "Hej du!", () => {
-        sendButtonMessage(sender, "Did you recently come to Sweden or are you a native?", [{
+      sendMessage.userdata(sender);
+      sendMessage.text(sender, "Hej du!", () => {
+        sendMessage.button(sender, "Did you recently come to Sweden or are you a native?", [{
           "type":"postback",
           "title":"I'm a migrant!",
           "payload":"INTRO_MIGRANT"
@@ -149,9 +58,9 @@ app.post('/webhook/', (req, res) => {
     if (event.postback && event.postback.payload) {
       let payload = event.postback.payload
       if (payload === 'INTRO_MIGRANT') {
-        sendTextMessage(sender, "Welcome to Sweden.", () => {
-          sendTextMessage(sender, "We are going to find a buddy for you that will help you with finding your daily routine, but first we need a couple of informations about you.", () => {
-            sendButtonMessage(sender, "It seems like you speak $language, do you also want to select a second language that you feel comfortable speaking in?", [{
+        sendMessage.text(sender, "Welcome to Sweden.", () => {
+          sendMessage.text(sender, "We are going to find a buddy for you that will help you with finding your daily routine, but first we need a couple of informations about you.", () => {
+            sendMessage.button(sender, "It seems like you speak $language, do you also want to select a second language that you feel comfortable speaking in?", [{
               "type":"postback",
               "title":"English",
               "payload":"MIGRANT_LANGUAGE_EN"
@@ -169,13 +78,13 @@ app.post('/webhook/', (req, res) => {
         return
       }
       if (payload.startsWith('MIGRANT_LANGUAGE_')) {
-        sendTextMessage(sender, "Cool. We also need your location, so we can find a buddy close to you.", () => {
-          sendQuickReplyMessage(sender, "Please share your location:", [{ content_type: "location" }])
+        sendMessage.text(sender, "Cool. We also need your location, so we can find a buddy close to you.", () => {
+          sendMessage.quickreply(sender, "Please share your location:", [{ content_type: "location" }])
         })
       }
       if (payload === 'INTRO_SWEDE') {
-        sendTextMessage(sender, "Cool. We are looking for buddies that we can match up with newly arrived people to Sweden.", () => {
-          sendButtonMessage(sender, "Do you want to join?", [{
+        sendMessage.text(sender, "Cool. We are looking for buddies that we can match up with newly arrived people to Sweden.", () => {
+          sendMessage.button(sender, "Do you want to join?", [{
             "type":"postback",
             "title":"Yes!",
             "payload":"SWEDE_YES"
