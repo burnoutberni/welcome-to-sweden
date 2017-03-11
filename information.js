@@ -10,14 +10,13 @@ module.exports = function(sender, event, user) {
     
     if (event.postback && event.postback.payload) {
         let payload = event.postback.payload
-        if (payload === 'JOB_INFORMATION') {
-          user.lastStep = 'MIGRANT_INFORMATION'
-          sendMessage.text(sender, "Hey, my name is Hans. I'll be your job counselor today", () => {
-            questionsInfo.jobService(sender)
-            sendMessage.text(sender, "We are going to find a buddy for you that will help you with finding your daily routine, but first we need a couple of informations about you.", () => {
-              question.language(sender)
+        
+        switch (payload) {
+          case 'JOB_INFORMATION':
+            user.lastStep = 'MIGRANT_INFORMATION'
+            sendMessage.text(sender, "Hey, my name is Hans. I'll be your job counselor today", () => {
+                questionsInfo.jobService(sender)
             })
-          })
           return
         }
     }
