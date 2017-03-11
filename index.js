@@ -38,7 +38,7 @@ const processMessage = (sender, event, user) => {
       case 'FIRST_MESSAGE':
         user.lastStep = 'FIRST_QUESTION'
         sendMessage.text(sender, "Hej du!", () => {
-          askRole(sender)
+          question.role(sender)
         })
         return
       case 'FIRST_QUESTION':
@@ -98,7 +98,7 @@ app.post('/webhook/', (req, res) => {
         users[sender] = {
           firstName: fbUser.first_name,
           lastName: fbUser.last_name,
-          language: [fbUser.locale],
+          language: [fbUser.locale.split('_')[0]],
           lastStep: 'FIRST_MESSAGE',
         }
         user = users[sender]
