@@ -82,7 +82,7 @@ const askLocation = (convo) => {
   //quickReplies: {"content_type": "location"}
   convo.say({
     text: 'Where do you live?',
-    quickReplies: { content_type: "location" }
+    quickReplies: [{ content_type: "location" }]
   })
 
   convo.ask('Where do you live?', (payload, convo) => {
