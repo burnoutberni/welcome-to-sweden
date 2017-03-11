@@ -25,13 +25,13 @@ const sendTextMessage = (sender, text) => {
   })
 }
 
-const sendButtonMessage = (sender, question, buttons) {
+const sendButtonMessage = (sender, question) => {
   let messageData = {
     "attachment":{
       "type":"template",
       "payload":{
         "template_type":"button",
-        "text":"What do you want to do next?",
+        "text": question,
         "buttons":[{
           "type":"web_url",
           "url":"https://petersapparel.parseapp.com",
