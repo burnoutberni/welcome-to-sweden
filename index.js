@@ -110,11 +110,13 @@ const processMessage = (sender, event, user) => {
         })
         return
       case 'MIGRANT_BUDDY':
+        user.lastStep = 'MIGRANT_BUDDY'
         sendMessage.text(sender, "We are going to find a buddy for you that will help you with finding your daily routine, but first we need a couple of informations about you.", () => {
           question.language(sender, user.language.join(' and '))
         })
         return
       case 'MIGRANT_INFORMATION':
+        user.lastStep = 'MIGRANT_INFORMATION'
         information(sender, event, user)
         return
       case 'INTRO_SWEDE':
