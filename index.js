@@ -114,14 +114,16 @@ app.post('/webhook/', (req, res) => {
         users[sender] = {
           firstName: fbUser.first_name,
           lastName: fbUser.last_name,
-          language: [fbUser.locale ? fbUser.locale.split('_') : undefined],
+          language: [fbUser.locale ? fbUser.locale.split('_')[0] : undefined],
           lastStep: 'FIRST_MESSAGE',
         }
         user = users[sender]
+        console.log('fetched fb user', fbUser, user)
         processMessage(sender, event, user)
       });
     } else {
       user = users[sender]
+      console.log('fetched user', user)
       processMessage(sender, event, user)
     }
   })
