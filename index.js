@@ -129,13 +129,8 @@ app.post('/webhook/', (req, res) => {
   let messaging_events = req.body.entry[0].messaging
   messaging_events.map((event) => {
     let sender = event.sender.id
-    if (event.message && event.message.text) {
-      let text = event.message.text
+    if (event.message && event.message.payload) {
       let payload = event.message.payload
-      if (text === 'Generic') {
-        sendGenericMessage(sender)
-        return
-      }
       if (payload === 'INTRO_MIGRANT') {
         sendTextMessage(sender, "Welcome to Sweden.")
         sendButtonMessage(sender, "What are you looking for?", [{
@@ -156,6 +151,13 @@ app.post('/webhook/', (req, res) => {
           "title":"Yes!",
           "payload":"SWEDE_YES"
         }])
+      }
+    }
+    if (event.message && event.message.text) {
+      let text = event.message.text
+      if (text === 'Generic') {
+        sendGenericMessage(sender)
+        return
       }
       sendTextMessage(sender, "Hej du!")
       sendButtonMessage(sender, "Did you recently come to Sweden or are you a native?", [{
