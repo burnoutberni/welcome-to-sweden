@@ -37,8 +37,7 @@ app.post('/webhook/', (req, res) => {
   let messaging_events = req.body.entry[0].messaging
   messaging_events.map((event) => {
     let sender = event.sender.id
-    let user = users[sender]
-    if (!user) {
+    if (!users[sender]) {
       sendMessage.userdata(sender, (user) => {
         users[sender] = {
           firstName: user.first_name,
@@ -48,6 +47,8 @@ app.post('/webhook/', (req, res) => {
         }
       });
     }
+    let user = users[sender]
+
     console.log(event)
 
     if (event.message && event.message.text) {
