@@ -76,11 +76,24 @@ const askLanguage = (convo) => {
     if (addedLanguage) {
       convo.set('languages', [convo.get('languages'), addedLanguage.code])
     }
-    convo.say('Cool. We also need your location, so we can find a buddy close to you').then(() => askLocation(convo))
+    convo.say('Cool. We also need your location, so we can find a buddy close to you').then(() => askLocation(convo, (payload) => (
+      const languageCodes = convo.get('languages')
+      const allEnglishLanguageNames = languages.filter((language) => convo.get('languages').indexOf(language.code))
+        .map((language) => language.name)
+        .join(' and ')
+      console.log(allEnglishLanguageNames)
+      convo.say(`Ok, here's what you told me about you:
+      - Name: ${convo.get('first_name')}
+      - Languages: …
+      - Location: …`).then(() => {
+        convo.say('I will send you a message when we found your buddy!')
+        convo.end()
+      })
+    )))
   })
 }
 
-const askLocation = (convo) => {
+const askLocation = (convo, callback) => {
   convo.ask({
     text: 'Where do you live?',
     quickReplies: [{ content_type: "location" }]
@@ -89,19 +102,7 @@ const askLocation = (convo) => {
   }, [
     {
       event: 'attachment',
-      callback: (payload, convo) => {
-        const languageCodes = convo.get('languages')
-        const allEnglishLanguageNames = languages.filter((language) => convo.get('languages').indexOf(language.code))
-          .map((language) => language.name)
-          .join(' and ')
-        convo.say(`Ok, here's what you told me about you:
-        - Name: ${convo.get('first_name')}
-        - Languages: ${allEnglishLanguageNames}
-        - Location: …`).then(() => {
-          convo.say('I will send you a message when we found your buddy!')
-          convo.end()
-        })
-      }
+      callback: (payload) => callback(payload)
     }
   ])
 }
@@ -118,7 +119,10 @@ const askService = (convo) => {
     {
       event: 'postback:MIGRANT_INFO_JOB_AGENCY',
       callback: (payload, convo) => {
-        convo.say('Sure, no problem!').then(() => askLocation(convo))
+        convo.say('Sure, no problem!').then(() => askLocation(convo, (payload) => {
+          convo.say(`Ok, here's the closest job agency`)
+          convo.end()
+        }))
       }
     }
   ])
