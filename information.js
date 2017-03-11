@@ -24,11 +24,11 @@ module.exports = function(sender, event, user) {
             case 'INFO_JOB_CLOSEST_AGENCY':
                 user.lastStep = 'JOB_INFORMATION';
                 sendMessage.text(sender, "I'll need your location for that.", () => {
-                    sendMessage.text(sender, "Thanks for sending it to me, the closest office is this one.", () => {
-                        var closestOfficeAndDistance = job.closestOffice(59.4071609,17.9435293);
+                    sendMessage.text(sender, "Thanks, let's see...", () => {
+                        var closestOfficeAndDistance = job.closestOffice({latitude: 59.4071609, longitude: 17.9435293});
                         var closestOffice = closestOfficeAndDistance[0];
                         var distance = closestOfficeAndDistance[1];
-                        sendMessage.text(sender, "The closest office is " + closestOffice + ", "
+                        sendMessage.text(sender, "Found it, the closest office is " + closestOffice + ", "
                             + distance + " kilometers away.");
                     })
                 })
