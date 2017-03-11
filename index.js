@@ -6,6 +6,23 @@ const request = require('request')
 const app = express()
 const token = process.env.FB_PAGE_ACCESS_TOKEN
 
+const getUserData = (sender, userId) => {
+  request({
+    url: `https://graph.facebook.com/v2.6/${userId}`,
+    qs: {
+      access_token: token,
+      fields: 'first_name,last_name,profile_pic,locale,timezone,gender',
+    },
+    method: 'GET'
+  }, (error, response, body) => {
+    if (error) {
+      console.log('Error sending messages: ', error)
+    } else if (response.body.error) {
+      console.log('Error: ', response.body.error)
+    }
+  })
+}
+
 const sendTextMessage = (sender, text) => {
   let messageData = { text:text }
   request({
@@ -22,6 +39,7 @@ const sendTextMessage = (sender, text) => {
     } else if (response.body.error) {
       console.log('Error: ', response.body.error)
     }
+    console.log(response)
   })
 }
 
@@ -133,6 +151,8 @@ app.post('/webhook/', (req, res) => {
       let payload = event.postback.payload
       if (payload === 'INTRO_MIGRANT') {
         sendTextMessage(sender, "Welcome to Sweden.")
+        sendTextMessage(sender, "We are going to find a buddy for you that will help you with finding your daily routine, but first we need a couple of informations about you.")
+
         sendButtonMessage(sender, "What are you looking for?", [{
           "type":"postback",
           "title":"Nearest job office",
@@ -159,6 +179,7 @@ app.post('/webhook/', (req, res) => {
         sendGenericMessage(sender)
         return
       }
+      getData(sender);
       sendTextMessage(sender, "Hej du!")
       sendButtonMessage(sender, "Did you recently come to Sweden or are you a native?", [{
         "type":"postback",
