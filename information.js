@@ -28,7 +28,7 @@ module.exports = function(sender, event, user) {
                         var closestOfficeAndDistance = job.closestOffice({latitude: 59.4071609, longitude: 17.9435293});
                         var closestOffice = closestOfficeAndDistance[0];
                         var distance = closestOfficeAndDistance[1];
-                        sendMessage.text(sender, "Found it, the closest office is " + closestOffice + ", "
+                        sendMessage.text(sender, "Found it, the closest office is " + closestOffice.name + ", "
                             + distance + " kilometers away.");
                     })
                 })
