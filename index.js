@@ -90,10 +90,8 @@ const askLocation = (convo) => {
     {
       event: 'attachment',
       callback: (payload, convo) => {
-        console.log(payload, convo)
         const languageCodes = convo.get('languages')
-        const allEnglishLanguageNames = languages
-          .filter((language) => convo.get('languages').indexOf(language.code))
+        const allEnglishLanguageNames = languages.filter((language) => convo.get('languages').indexOf(language.code))
           .map((language) => language.name)
           .join(' and ')
         convo.say(`Ok, here's what you told me about you:
