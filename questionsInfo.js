@@ -15,11 +15,11 @@ const askService = (sender) => {
 const askJobService = (sender) => {
   sendMessage.button(sender, `Here's what I can do for you`, [{
     "type":"postback",
-    "title":"Show the nearest job agency",
+    "title":"Closest agency",
     "payload":"INFO_JOB_CLOSEST_AGENCY"
   }, {
     "type":"postback",
-    "title":"Show me some job offers",
+    "title":"Job offers",
     "payload":"INFO_JOB_OFFERS"
   }])
 }

@@ -1,6 +1,7 @@
 const sendMessage = require(__dirname + '/sendMessages.js')
 const question = require(__dirname + '/questions.js')
 const questionsInfo = require(__dirname + '/questionsInfo.js')
+const job = require(__dirname + '/job.js')
 
 module.exports = function(sender, event, user) {
 
@@ -22,8 +23,11 @@ module.exports = function(sender, event, user) {
             return
             case 'INFO_JOB_CLOSEST_AGENCY':
                 user.lastStep = 'JOB_INFORMATION';
-                sendMessage.text(sender, "Hey, my name is Hans. I'll be your job counselor today", () => {
-                    question.location(sender);
+                sendMessage.text(sender, "I'll need your location for that.", () => {
+                    sendMessage.text(sender, "Thanks for sending it to me, the closest office is this one.", () => {
+                        var closestOffice = job.closestOffice();
+                        sendMessage.text(sender, closestOffice);
+                    })
                 })
             return
         }
