@@ -65,6 +65,7 @@ const askPurpose = (convo) => {
 
 const askLanguage = (convo) => {
   const englishLanguageNames = languages.filter((language) => language.code === convo.get('languages'))
+    .map((language) => language.name)
 
   convo.ask(`Do you speak any other language than ${englishLanguageNames.join(' and ')}?`, (payload, convo, data) => {
     const text = payload.message.text.toLowerCase()
