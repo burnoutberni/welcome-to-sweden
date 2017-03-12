@@ -17,10 +17,7 @@
   },
   "homepage": "https://github.com/burnoutberni/welcome-to-sweden#readme",
   "dependencies": {
-    "body-parser": "^1.17.1",
     "bootbot": "^1.0.8",
-    "express": "^4.15.2",
     "node-fetch": "^1.6.3",
-    "request": "^2.81.0"
   }
 }

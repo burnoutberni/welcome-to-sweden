@@ -1,8 +1,8 @@
 'use strict'
 
 const BootBot = require('bootbot');
-const languages = require(__dirname + '/ISOlanguage.json')
 const fetch = require('node-fetch')
+const languages = require(__dirname + '/ISOlanguage.json')
 const job = require(__dirname + '/job.js')
 
 const bot = new BootBot({
